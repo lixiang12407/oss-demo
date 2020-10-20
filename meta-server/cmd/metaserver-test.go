@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
-	"httpdemo/oss-demo/meta-server/handler"
 	"net/http"
+	"oss-demo/meta-server/handler"
 )
 
 func main() {
 	// todo
 	fmt.Println("Meta server started.")
 	http.HandleFunc("/", handler.Handler)
-	http.ListenAndServe("localhost:8080", nil)
+	http.HandleFunc("/updatemeta/", handler.MetaHandler)
+	http.ListenAndServe("localhost:8090", nil)
 }

@@ -8,7 +8,7 @@ import (
 )
 
 func getObject(filename string) {
-	response, err := http.Get("http://localhost:8080/" + filename)
+	response, err := http.Get("http://localhost:8090/" + filename)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -28,7 +28,28 @@ func getObject(filename string) {
 	io.Copy(fileWriter, response.Body)
 }
 
+func putObject(filename string) {
+	request, err := http.NewRequest(http.MethodPut, "http://localhost:8090/"+filename, nil)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	response, _ := http.DefaultClient.Do(request)
+	fileLocation := response.Header.Get("location")
+
+	fileReader, _ := os.Open(filename)
+	defer fileReader.Close()
+
+	request, err = http.NewRequest(http.MethodPut, fileLocation, fileReader)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	response, _ = http.DefaultClient.Do(request)
+	fmt.Println(http.StatusText(response.StatusCode))
+}
+
 func main() {
 	filename := "test.file"
-	getObject(filename)
+	putObject(filename)
 }

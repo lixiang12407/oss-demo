@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"httpdemo/oss-demo/data-server-1/handler"
 	"net/http"
+	"oss-demo/data-server-1/handler"
 )
 
 func main() {
