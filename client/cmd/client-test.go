@@ -49,7 +49,23 @@ func putObject(filename string) {
 	fmt.Println(http.StatusText(response.StatusCode))
 }
 
+func delObject(filename string) {
+	request, err := http.NewRequest(http.MethodDelete, "http://localhost:8090/"+filename, nil)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	response, _ := http.DefaultClient.Do(request)
+	fileLocation := response.Header.Get("location")
+	fmt.Println(fileLocation)
+
+	request, _ = http.NewRequest(http.MethodDelete, "http://localhost:8081/deletefile"+filename, nil)
+	response, _ = http.DefaultClient.Do(request)
+	fmt.Println(http.StatusText(response.StatusCode))
+}
+
 func main() {
-	filename := "test.file"
-	putObject(filename)
+	filename := "test1.file"
+	// putObject(filename)
+	delObject(filename)
 }

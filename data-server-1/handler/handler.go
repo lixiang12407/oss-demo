@@ -18,7 +18,28 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		getHandler(w, r)
 	case http.MethodPut:
 		putHandler(w, r)
+	case http.MethodDelete:
+		delHandler(w, r)
 	}
+}
+
+func delHandler(w http.ResponseWriter, r *http.Request) {
+	filename := strings.Split(r.URL.EscapedPath(), "/")[1]
+	fmt.Println(filename)
+	err := os.Remove("storage/" + filename)
+	if err != nil {
+		fmt.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	_, err = http.Get("http://localhost:8090/deletefile/" + filename)
+	if err != nil {
+		fmt.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	// 回复客户端
+	w.WriteHeader(http.StatusOK)
 }
 
 func getHandler(w http.ResponseWriter, r *http.Request) {

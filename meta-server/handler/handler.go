@@ -15,7 +15,30 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		getHandler(w, r)
 	case http.MethodPut:
 		putHandler(w, r)
+	case http.MethodDelete:
+		delHandler(w, r)
 	}
+}
+
+func delHandler(w http.ResponseWriter, r *http.Request) {
+	filename := strings.Split(r.URL.EscapedPath(), "/")[1]
+	//查询数据库
+	mydb := database.GetDatabase()
+	stmt, err := mydb.Prepare("SELECT location FROM file_meta WHERE filename = ?")
+	if err != nil {
+		fmt.Println(err)
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	var location string
+	err = stmt.QueryRow(filename).Scan(&location)
+	if err != nil {
+		fmt.Println(err)
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	fileLocation := location + filename
+	w.Header().Set("location", fileLocation)
 }
 
 func getHandler(w http.ResponseWriter, r *http.Request) {
@@ -63,6 +86,25 @@ func MetaHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_, err = stmt.Exec(filename, filehash, location)
+	if err != nil {
+		fmt.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+// DelHandler method.
+func DelHandler(w http.ResponseWriter, r *http.Request) {
+	filename := strings.Split(r.URL.EscapedPath(), "/")[1]
+	mydb := database.GetDatabase()
+	stmt, err := mydb.Prepare("DELETE FROM file_meta WHERE filename = ?")
+	if err != nil {
+		fmt.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	_, err = stmt.Exec(filename)
 	if err != nil {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)

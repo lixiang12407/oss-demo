@@ -11,5 +11,6 @@ func main() {
 	fmt.Println("Meta server started.")
 	http.HandleFunc("/", handler.Handler)
 	http.HandleFunc("/updatemeta/", handler.MetaHandler)
+	http.HandleFunc("/deletefile/", handler.DelHandler)
 	http.ListenAndServe("localhost:8090", nil)
 }
