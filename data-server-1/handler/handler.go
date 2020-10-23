@@ -24,7 +24,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func delHandler(w http.ResponseWriter, r *http.Request) {
-	filename := strings.Split(r.URL.EscapedPath(), "/")[1]
+	filename := strings.Split(r.URL.EscapedPath(), "/")[2]
 	fmt.Println(filename)
 	err := os.Remove("storage/" + filename)
 	if err != nil {
@@ -57,6 +57,7 @@ func getHandler(w http.ResponseWriter, r *http.Request) {
 func putHandler(w http.ResponseWriter, r *http.Request) {
 	// 文件存储
 	filename := strings.Split(r.URL.EscapedPath(), "/")[1]
+	fmt.Println(filename)
 	fileWriter, err := os.Create("storage/" + filename)
 	if err != nil {
 		fmt.Println(err)

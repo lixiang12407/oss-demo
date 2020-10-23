@@ -37,7 +37,7 @@ func delHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	fileLocation := location + filename
+	fileLocation := location + "/" + filename
 	w.Header().Set("location", fileLocation)
 }
 
@@ -59,7 +59,7 @@ func getHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fileLocation := location + filename
+	fileLocation := location + "/" + filename
 	w.Header().Set("location", fileLocation)
 }
 
@@ -96,7 +96,8 @@ func MetaHandler(w http.ResponseWriter, r *http.Request) {
 
 // DelHandler method.
 func DelHandler(w http.ResponseWriter, r *http.Request) {
-	filename := strings.Split(r.URL.EscapedPath(), "/")[1]
+	filename := strings.Split(r.URL.EscapedPath(), "/")[2]
+	fmt.Println(filename)
 	mydb := database.GetDatabase()
 	stmt, err := mydb.Prepare("DELETE FROM file_meta WHERE filename = ?")
 	if err != nil {

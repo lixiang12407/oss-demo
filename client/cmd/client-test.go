@@ -59,7 +59,7 @@ func delObject(filename string) {
 	fileLocation := response.Header.Get("location")
 	fmt.Println(fileLocation)
 
-	request, _ = http.NewRequest(http.MethodDelete, "http://localhost:8081/deletefile"+filename, nil)
+	request, _ = http.NewRequest(http.MethodDelete, "http://localhost:8081/deletefile/"+filename, nil)
 	response, _ = http.DefaultClient.Do(request)
 	fmt.Println(http.StatusText(response.StatusCode))
 }
@@ -67,5 +67,6 @@ func delObject(filename string) {
 func main() {
 	filename := "test1.file"
 	// putObject(filename)
+	// getObject(filename)
 	delObject(filename)
 }
